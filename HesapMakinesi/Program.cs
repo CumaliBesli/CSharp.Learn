@@ -15,38 +15,64 @@ namespace HesapMakinesi
             string[] varOlanKelimeler = new string[gelenMetinDizisi.Length];
             int[] gelenMetindekiKelimelerinSayilari = new int[gelenMetinDizisi.Length];
             int KelimeninSayisi = 0;
-            int enCokOlanKelimeSayisi = 0;
-            int enAzOlanKelimeSayisi = 0;
+            int enCokKelime = 0;
+            int enAzKelime = gelenMetinDizisi.Length;
+            int EnCokKelimeIndeksi = 0;
+            int enAzKelimeIndeksi = 0;
 
             //a c a d r a
             for (int i = 0; i < gelenMetinDizisi.Length; i++)
             {
                 KelimeninSayisi = 0;
 
-                for (int j = 0; j < gelenMetinDizisi.Length; j++)
+                if (!varOlanKelimeler.Contains(gelenMetinDizisi[i]))
                 {
-                    if (gelenMetinDizisi[i] == gelenMetinDizisi[j])
+                    for (int j = 0; j < gelenMetinDizisi.Length; j++)
                     {
-                        KelimeninSayisi++;
+                        if (gelenMetinDizisi[i] == gelenMetinDizisi[j])
+                        {
+                            KelimeninSayisi++;
+                        }
                     }
+                    if (KelimeninSayisi > enCokKelime)
+                    {
+                        EnCokKelimeIndeksi = i;
+                        enCokKelime = KelimeninSayisi;
+                    }
+                    else if (KelimeninSayisi < enAzKelime)
+                    {
+                        enAzKelimeIndeksi = i;
+                        enAzKelime = KelimeninSayisi;
+                    }
+                    gelenMetindekiKelimelerinSayilari[i] = KelimeninSayisi;
+                    varOlanKelimeler[i] = gelenMetinDizisi[i];
+                    Console.WriteLine(gelenMetinDizisi[i] + " kelimesinin sayısı: " + KelimeninSayisi);
                 }
-                gelenMetindekiKelimelerinSayilari[i] = KelimeninSayisi;
-                varOlanKelimeler[i] = gelenMetinDizisi[i];
             }
 
-            for (int i = 0; i < gelenMetindekiKelimelerinSayilari.Length; i++)
-            {
-                if (gelenMetindekiKelimelerinSayilari[i] > enCokOlanKelimeSayisi)
-                {
-                    enCokOlanKelimeSayisi = i;
-                }
-                if (gelenMetindekiKelimelerinSayilari[i] < enAzOlanKelimeSayisi)
-                {
-                    enAzOlanKelimeSayisi = i;
-                }
-            }
+            Console.WriteLine("Metinde en çok geçen kelime: " + gelenMetinDizisi[EnCokKelimeIndeksi] + " \nMetinde en az bulunan kelime: " + gelenMetinDizisi[enAzKelimeIndeksi]);
+            Console.WriteLine("NOT: Eşitlik kontrolü yapılmadığından metinde en çok geçen kelime eşitlik olduğunda ilk bulunan kelimedir. Ez az bulunan kelime eşitlik durummunda yine ilk bulunan kelimedir.");
 
-            Console.WriteLine($"En fazla bulunan kelime = {gelenMetinDizisi[enCokOlanKelimeSayisi]} En az bulunan kelime = {gelenMetinDizisi[enCokOlanKelimeSayisi]}");
+            //int enCokOlanKelimeSayisi = gelenMetindekiKelimelerinSayilari.Min();
+            //int enCokOlanKelimeIndeksi = 0;
+            //int enAzOlanKelimeSayisi = gelenMetindekiKelimelerinSayilari.Max();
+            //int enAzolanKelimeIndeksi = 0;
+
+            //for (int i = 0; i < gelenMetindekiKelimelerinSayilari.Length; i++)
+            //{
+            //    if (gelenMetindekiKelimelerinSayilari[i] > enCokOlanKelimeSayisi)
+            //    {
+            //        enCokOlanKelimeSayisi = gelenMetindekiKelimelerinSayilari[i];
+            //        enCokOlanKelimeIndeksi = i;
+            //    }
+            //    if (gelenMetindekiKelimelerinSayilari[i] < enAzOlanKelimeSayisi)
+            //    {
+            //        enAzOlanKelimeSayisi = gelenMetindekiKelimelerinSayilari[i];
+            //        enAzolanKelimeIndeksi = i;
+            //    }
+            //}
+
+            //Console.WriteLine($"En fazla bulunan kelime = {gelenMetinDizisi[enCokOlanKelimeIndeksi]} En az bulunan kelime = {gelenMetinDizisi[enAzolanKelimeIndeksi]}");
             Console.ReadLine();
 
             //while (true)
