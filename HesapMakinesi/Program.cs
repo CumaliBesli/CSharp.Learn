@@ -51,7 +51,7 @@ namespace HesapMakinesi
             }
 
             Console.WriteLine("Metinde en çok geçen kelime: " + gelenMetinDizisi[EnCokKelimeIndeksi] + " \nMetinde en az bulunan kelime: " + gelenMetinDizisi[enAzKelimeIndeksi]);
-            Console.WriteLine("NOT: Eşitlik kontrolü yapılmadığından metinde en çok geçen kelime eşitlik olduğunda ilk bulunan kelimedir. Ez az bulunan kelime eşitlik durummunda yine ilk bulunan kelimedir.");
+            Console.WriteLine("NOT: Eşitlik kontrolü yapılmadığından metinde en çok geçen kelime, eşitlik olduğunda ilk bulunan kelimedir. Ez az bulunan kelime eşitlik durummunda yine ilk bulunan kelimedir.");
 
             //int enCokOlanKelimeSayisi = gelenMetindekiKelimelerinSayilari.Min();
             //int enCokOlanKelimeIndeksi = 0;

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AritmetikOperasyon.cs" />
+    <Compile Include="ConsoleVeriGir.cs" />
     <Compile Include="DegiskenTanimlama.cs" />
     <Compile Include="Diziler.cs" />
     <Compile Include="Donguler.cs" />

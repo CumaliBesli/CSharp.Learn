@@ -10,24 +10,30 @@ namespace CSharp.Learn.Namsespace
     {
         static void Main(string[] args)
         {
-            byte a = 10;
-            //a = 256;
-            //a = "a";
+            //byte a = 10;
+            ////a = 256;
+            ////a = "a";
 
-            int x = a;
+            //int x = a;
 
-            //a = x;
+            ////a = x;
 
-            float y = 5.2f;
-            //x =y;
-            y = x;
+            //float y = 5.2f;
+            ////x =y;
+            //y = x;
 
-            string s = "abscd";
-            //char[] cs = new[] { 'a', 'b', 's', 'c', 'd' };
+            //string s = "abscd";
+            ////char[] cs = new[] { 'a', 'b', 's', 'c', 'd' };
 
-            char c = 'c';
+            //char c = 'c';
 
-            c = s[0];
+            //c = s[0];
+
+            ConsoleVeriGir veriGir = new ConsoleVeriGir();
+            //veriGir.GirilenDegeriAl();
+
+            veriGir.EnUzunKelime();
+            Console.ReadLine();
         }
     }
 }
