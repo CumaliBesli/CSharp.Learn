@@ -48,6 +48,11 @@ namespace HesapMakinesi
                     varOlanKelimeler[i] = gelenMetinDizisi[i];
                     Console.WriteLine(gelenMetinDizisi[i] + " kelimesinin sayısı: " + KelimeninSayisi);
                 }
+                else
+                {
+                    gelenMetindekiKelimelerinSayilari[i] = KelimeninSayisi;
+                    varOlanKelimeler[i] = gelenMetinDizisi[i];
+                }
             }
 
             Console.WriteLine("Metinde en çok geçen kelime: " + gelenMetinDizisi[EnCokKelimeIndeksi] + " \nMetinde en az bulunan kelime: " + gelenMetinDizisi[enAzKelimeIndeksi]);
