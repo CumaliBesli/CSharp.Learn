@@ -24,7 +24,7 @@ namespace Bina
 
         private string _ad;
 
-        public string Ad     { get; }
+        public string Ad { get; }
 
 
         //private string _renk;
