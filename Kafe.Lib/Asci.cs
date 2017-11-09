@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KafeYonetim.Lib
 {
-    public class Asci: Calisan
+    public class Asci : Calisan
     {
-        public Asci(string i, DateTime g, Kafe k): base(i, g, k)
+        public Asci(string i, DateTime g, Kafe k) : base(i, g, k)
         {
 
         }
@@ -21,8 +21,12 @@ namespace KafeYonetim.Lib
             {
                 kalem.Durum = SiparisDurum.Hazirlaniyor;
             }
+        }
 
+        public SiparisDurum SiparisHazir()
+        {
             Console.WriteLine("Sipariş Hazırlandı.");
+            return SiparisDurum.Hazir;
         }
     }
 }

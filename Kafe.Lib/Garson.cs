@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KafeYonetim.Lib
 {
-    public class Garson: Calisan
+    public class Garson : Calisan
     {
-        public Garson(string i, DateTime g, Kafe k): base(i, g, k)
+        public Garson(string i, DateTime g, Kafe k) : base(i, g, k)
         {
 
         }
@@ -17,19 +17,26 @@ namespace KafeYonetim.Lib
         {
             Console.WriteLine("Masa açıldı.");
         }
-
+        Asci asci;
         public void SiparisAl(Siparis siparis)
         {
             Siparisler.Add(siparis);
-            Asci asci = Kafe.UygunAsciBul(CalisanDurum.Uygun);//OVERLOAD
+            asci = Kafe.UygunAsciBul(CalisanDurum.Uygun);//OVERLOAD
             asci.SiparisiHazirla(siparis);
 
             Console.WriteLine("Sipariş alındı.");
         }
 
-        public void SiparisiServisEt()
+        public void SiparisiServisEt(SiparisDurum durum)
         {
-            Console.WriteLine("Sipariş servis edildi.");
+            if (durum == SiparisDurum.Hazir)
+            {
+                Console.WriteLine("Sipariş servis edildi.");
+            }
+            else
+            {
+                Console.WriteLine("Hazırlanıyor..");
+            }
         }
 
         public void OdemeAl()

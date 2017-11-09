@@ -2,8 +2,8 @@
 {
     public enum SiparisDurum
     {
-        Alindi,
         Hazirlaniyor,
+        Hazir,
         TeslimEdildi
     }
 }

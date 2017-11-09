@@ -18,7 +18,7 @@ namespace KafeYonetim.Lib
 
         public void GarsonCagir()
         {
-            if(!(Garson is null))
+            if (!(Garson is null))
             {
                 return;
             }
@@ -78,7 +78,7 @@ namespace KafeYonetim.Lib
                 }
 
                 var kalem = new Kalem();
-                kalem.Urun = Kafe.Urunler[int.Parse(secim)-1];
+                kalem.Urun = Kafe.Urunler[int.Parse(secim) - 1];
 
                 Console.Write("Adet belirtiniz: ");
                 var adet = int.Parse(Console.ReadLine());
@@ -94,7 +94,11 @@ namespace KafeYonetim.Lib
         {
             Console.Clear();
             Console.WriteLine("Siparişler");
-
+            if (Siparis.Kalemler.Count < 1)
+            {
+                Console.WriteLine("Bu masaya henuz sipariş verilmemiş");
+                return;
+            }
             foreach (var kalem in Siparis.Kalemler)
             {
                 Console.WriteLine($"{kalem.Urun.Ad} - {kalem.Durum}");
