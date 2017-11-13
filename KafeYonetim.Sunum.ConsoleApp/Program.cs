@@ -85,8 +85,10 @@ namespace KafeYonetim.Sunum.ConsoleApp
             Console.Clear();
             Console.WriteLine("Masa numarasını belirtin: ");
             int masaNo = int.Parse(Console.ReadLine());
-            Garson garson = kafe.UygunGarsonuBul(CalisanDurum.Masada);
-            garson.SiparisiServisEt(((Asci)kafe.Calisanlar[2]).SiparisHazir());
+            SiparisDurum durum = kafe.Masalar[masaNo].Siparis.SiparisiHazirlayanAsci.SiparisHazir();
+            kafe.Masalar[masaNo].Siparis.SiparisiAlanGarson.SiparisiServisEt(durum);
+            //Garson garson = kafe.UygunGarsonuBul(CalisanDurum.Masada);
+            //garson.SiparisiServisEt(((Asci)kafe.Calisanlar[2]).SiparisHazir());
         }
 
         public static void MenuYazdir()
