@@ -3,7 +3,7 @@
     public enum SiparisDurum
     {
         Hazirlaniyor,
-        Hazir,
-        TeslimEdildi
+        TeslimEdildi,
+        Hazirlandi
     }
 }

@@ -17,26 +17,32 @@ namespace KafeYonetim.Lib
         {
             Console.WriteLine("Masa açıldı.");
         }
-        Asci asci;
+
+        //Method Signature - Metod imzası
+        //  1. Metodun adı
+        //  2. Parametre sayısı
+        //  3. Parametre tipleri
         public void SiparisAl(Siparis siparis)
         {
             Siparisler.Add(siparis);
-            asci = Kafe.UygunAsciBul(CalisanDurum.Uygun);//OVERLOAD
+            Asci asci = Kafe.UygunAsciBul();//OVERLOAD
+            siparis.SiparisiHazirlayanAsci = asci;
             asci.SiparisiHazirla(siparis);
-
+            Kafe.Siparisler.Add(siparis);
             Console.WriteLine("Sipariş alındı.");
         }
-
-        public void SiparisiServisEt(SiparisDurum durum)
+        
+        public void SiparisiServisEt(Siparis siparis)
         {
-            if (durum == SiparisDurum.Hazir)
+            foreach (var kalem in siparis.Kalemler)
             {
-                Console.WriteLine("Sipariş servis edildi.");
+                kalem.Durum = SiparisDurum.TeslimEdildi;
             }
-            else
-            {
-                Console.WriteLine("Hazırlanıyor..");
-            }
+
+            siparis.SiparisiAlanGarson.Durum = CalisanDurum.Uygun;
+            siparis.SiparisiAlanGarson = null;
+
+            Console.WriteLine("Sipariş servis edildi.");
         }
 
         public void OdemeAl()
