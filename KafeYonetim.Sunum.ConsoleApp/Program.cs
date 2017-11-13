@@ -99,16 +99,16 @@ namespace KafeYonetim.Sunum.ConsoleApp
             kafe.Masalar[masaNo].SiparisVer();
         }
 
-        private static void ServisEt()
-        {
-            Console.Clear();
-            Console.WriteLine("Masa numarasını belirtin: ");
-            int masaNo = int.Parse(Console.ReadLine());
-            SiparisDurum durum = kafe.Masalar[masaNo].Siparis.SiparisiHazirlayanAsci.SiparisHazir();
-            kafe.Masalar[masaNo].Siparis.SiparisiAlanGarson.SiparisiServisEt(durum);
-            //Garson garson = kafe.UygunGarsonuBul(CalisanDurum.Masada);
-            //garson.SiparisiServisEt(((Asci)kafe.Calisanlar[2]).SiparisHazir());
-        }
+        //private static void ServisEt()
+        //{
+        //    Console.Clear();
+        //    Console.WriteLine("Masa numarasını belirtin: ");
+        //    int masaNo = int.Parse(Console.ReadLine());
+        //    SiparisDurum durum = kafe.Masalar[masaNo].Siparis.SiparisiHazirlayanAsci.SiparisHazir();
+        //    kafe.Masalar[masaNo].Siparis.SiparisiAlanGarson.SiparisiServisEt(durum);
+        //    //Garson garson = kafe.UygunGarsonuBul(CalisanDurum.Masada);
+        //    //garson.SiparisiServisEt(((Asci)kafe.Calisanlar[2]).SiparisHazir());
+        //}
 
         public static void MenuYazdir()
         {

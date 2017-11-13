@@ -26,7 +26,7 @@ namespace KafeYonetim.Lib
         public SiparisDurum SiparisHazir()
         {
             Console.WriteLine("Sipariş Hazırlandı.");
-            return SiparisDurum.Hazir;
+            return SiparisDurum.Hazirlandi;
         }
 
         public void SiparisHazirlandi(Siparis siparis)
