@@ -54,52 +54,139 @@ namespace KafeYonetimData
             Console.ReadLine();
         }
 
-        public void YuksekFiyatliyiGetir()
+        public void UrunFiyatiniGetir()
         {
-            var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR; Initial Catalog=KafeYonetim; Integrated Security=true");
+            var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR;Initial Catalog=KafeYonetim;Integrated Security=True");
 
             connection.Open();
 
-            double fiyat = double.Parse(Console.ReadLine());
-            var command = new SqlCommand("Select * from Urunler where fiyat > @Fiyat", connection);
+            Console.WriteLine("Ürün adı yazınız: ");
+            string urunAdi = Console.ReadLine();
 
-            command.Parameters.AddWithValue("@Fiyat", fiyat);
+            //var command = new SqlCommand($"SELECT Fiyat FROM Urunler WHERE Ad = '{urunAdi}' ", connection);
+
+            var command = new SqlCommand($"SELECT Fiyat FROM Urunler WHERE Ad = @Ad", connection);
+
+            command.Parameters.AddWithValue("@Ad", urunAdi);
+
+            var result = (double)command.ExecuteScalar();
+
+            Console.WriteLine($"{urunAdi} ürününün fiyatı: {result}");
+
+            connection.Close();
+
+            Console.ReadLine();
+
+        }        
+
+        public void DegerdenYuksekFiyatliUrunleriGetir()
+        {
+            var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR;Initial Catalog=KafeYonetim;Integrated Security=True");
+
+            connection.Open();
+
+            Console.Write("Bir değer giriniz: ");
+            var deger = Console.ReadLine();
+
+            var command = new SqlCommand("SELECT * FROM Urunler WHERE fiyat > @deger", connection);
+            command.Parameters.AddWithValue("@deger", double.Parse(deger));
 
             var result = command.ExecuteReader();
+
             while (result.Read())
             {
-                Console.WriteLine($"Adı: {result["Ad"]}, Fiyatı: {result["Fiyat"]}");
+                Console.Write($"{result["ad"]}");
+                Console.Write($"{result["Fiyat"]}");
+                Console.WriteLine();
             }
 
             result.Close();
             connection.Close();
 
             Console.ReadLine();
+
         }
 
-        public void UrunEkle()
+        public void UrunGir()
         {
-            string Adi = Console.ReadLine();
-            double Fiyat = double.Parse(Console.ReadLine());
-            byte VarMi = byte.Parse(Console.ReadLine());
-
-            var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR; Initial Catalog=KafeYonetim; Integrated Security=true");
+            var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR;Initial Catalog=KafeYonetim;Integrated Security=True");
 
             connection.Open();
 
-            var command = new SqlCommand("insert into Urunler (Ad, Fiyat, StoktaVarMi) values(@ad, @fiyat, @StokVarMi)", connection);
+            Console.Write("Ürün Adını giriniz: ");
+            var ad = Console.ReadLine();
 
-            command.Parameters.AddWithValue("@ad", Adi);
-            command.Parameters.AddWithValue("@fiyat", Fiyat);
-            command.Parameters.AddWithValue("@StokVarMi", VarMi);
+            Console.Write("Ürün fiyatını giriniz: ");
+            var fiyat = double.Parse(Console.ReadLine());
 
-            command.ExecuteNonQuery();
+            Console.Write("Ürün stokta var mı? (e/h): ");
+            var stok = (Console.ReadLine() == "e") ? true : false;
+
+            var command = new SqlCommand("INSERT INTO Urunler (ad, fiyat, stoktavarmi) VALUES (@ad, @fiyat, @stoktaVarMi)", connection);
+            command.Parameters.AddWithValue("@ad", ad);
+            command.Parameters.AddWithValue("@fiyat", fiyat);
+            command.Parameters.AddWithValue("@stoktaVarMi", stok);
+
+            var result = command.ExecuteNonQuery();
+
+
+            if (result > 0)
+            {
+                Console.WriteLine("Kayıt eklendi.");
+            }
 
             connection.Close();
 
-            Console.WriteLine("Eklendi");
+            Console.ReadLine();
 
-            UrunListesiniYazdir();
         }
+
+        //public void YuksekFiyatliyiGetir()
+        //{
+        //    var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR; Initial Catalog=KafeYonetim; Integrated Security=true");
+
+        //    connection.Open();
+
+        //    double fiyat = double.Parse(Console.ReadLine());
+        //    var command = new SqlCommand("Select * from Urunler where fiyat > @Fiyat", connection);
+
+        //    command.Parameters.AddWithValue("@Fiyat", fiyat);
+
+        //    var result = command.ExecuteReader();
+        //    while (result.Read())
+        //    {
+        //        Console.WriteLine($"Adı: {result["Ad"]}, Fiyatı: {result["Fiyat"]}");
+        //    }
+
+        //    result.Close();
+        //    connection.Close();
+
+        //    Console.ReadLine();
+        //}
+
+        //public void UrunEkle()
+        //{
+        //    string Adi = Console.ReadLine();
+        //    double Fiyat = double.Parse(Console.ReadLine());
+        //    byte VarMi = byte.Parse(Console.ReadLine());
+
+        //    var connection = new SqlConnection("Data Source=DESKTOP-S3O5AOR; Initial Catalog=KafeYonetim; Integrated Security=true");
+
+        //    connection.Open();
+
+        //    var command = new SqlCommand("insert into Urunler (Ad, Fiyat, StoktaVarMi) values(@ad, @fiyat, @StokVarMi)", connection);
+
+        //    command.Parameters.AddWithValue("@ad", Adi);
+        //    command.Parameters.AddWithValue("@fiyat", Fiyat);
+        //    command.Parameters.AddWithValue("@StokVarMi", VarMi);
+
+        //    command.ExecuteNonQuery();
+
+        //    connection.Close();
+
+        //    Console.WriteLine("Eklendi");
+
+        //    UrunListesiniYazdir();
+        //}
     }
 }
