@@ -176,19 +176,19 @@ namespace KafeYonetim.Data
             Console.ReadLine();
         }
 
-        public static void UrunGir()
+        public static void UrunGir(string ad, float fiyat, bool stok)
         {
             using (var connection = CreateConnection())
             {
 
-                Console.Write("Ürün Adını giriniz: ");
-                var ad = Console.ReadLine();
+                //Console.Write("Ürün Adını giriniz: ");
+                //var ad = Console.ReadLine();
 
-                Console.Write("Ürün fiyatını giriniz: ");
-                var fiyat = double.Parse(Console.ReadLine());
+                //Console.Write("Ürün fiyatını giriniz: ");
+                //var fiyat = double.Parse(Console.ReadLine());
 
-                Console.Write("Ürün stokta var mı? (e/h): ");
-                var stok = (Console.ReadLine() == "e") ? true : false;
+                //Console.Write("Ürün stokta var mı? (e/h): ");
+                //var stok = (Console.ReadLine() == "e") ? true : false;
 
                 var command = new SqlCommand("INSERT INTO Urunler (ad, fiyat, stoktavarmi) VALUES (@ad, @fiyat, @stoktaVarMi)", connection);
                 command.Parameters.AddWithValue("@ad", ad);

@@ -12,21 +12,32 @@ namespace KafeYonetim.Sunum.AnaUygulama
         static void Main(string[] args)
         {
 
-            DataManager.KafeBilgisiniYazdir();
+            //DataManager.KafeBilgisiniYazdir();
 
             //dataManager.UrunListesiniYazdir();
 
             //dataManager.KafeAdiniGetir();
 
-            DataManager.UrunFiyatiniGetir();
+            //DataManager.UrunFiyatiniGetir();
 
-            //dataManager.DegerdenYuksekFiyatliUrunleriGetir();
+            //dataManager.DegerdenYuksekFiyatliUrunleriGetir();            
 
             //dataManager.UrunGir();
 
-           // dataManager.KapatilmamimsBaglanti();
+            // dataManager.KapatilmamimsBaglanti();
 
             //dataManager.SecilenUrunleriSil();
+
+            Console.Write("Ürün Adı: ");
+            string adi = Console.ReadLine();
+
+            Console.Write("Fiyatı: ");
+            float fiyat = float.Parse(Console.ReadLine());
+
+            Console.Write("Stokta Var mı?(var/yok): ");
+            bool stokDurumu = (Console.ReadLine() == "var") ? true : false;
+
+            DataManager.UrunGir(adi, fiyat, stokDurumu);
 
         }
     }
