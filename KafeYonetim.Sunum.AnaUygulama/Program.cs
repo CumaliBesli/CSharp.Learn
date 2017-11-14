@@ -1,4 +1,4 @@
-﻿using KafeYonetim.Data;
+﻿using KafeYonetimData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,45 +11,27 @@ namespace KafeYonetim.Sunum.AnaUygulama
     {
         static void Main(string[] args)
         {
-            var dataManager = new DataManager();
+            //var dataManager = new DataManager();
 
             //dataManager.KafeBilgisiniYazdir();
 
             //dataManager.UrunListesiniYazdir();
-
-            //dataManager.KafeAdiniGetir();
 
             //dataManager.UrunFiyatiniGetir();
 
             //dataManager.DegerdenYuksekFiyatliUrunleriGetir();
 
-            dataManager.UrunGir();
+            //dataManager.UrunGir();
 
-            Console.ReadLine();
-        }
-    }
-}
-using KafeYonetimData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+            //dataManager.UrunSil();
 
-namespace KafeYonetim.Sunum.AnaUygulama
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            DataManager dataManager = new DataManager();
-            //dataManager.KafeBilgisiniYazdir();
-
-            //dataManager.UrunListesiniYazdir();
-
-            //dataManager.YuksekFiyatliyiGetir();
-
-            dataManager.UrunEkle();
+            //DataManager.KafeBilgisiniYazdir();
+            //DataManager.UrunListesiniYazdir();
+            //DataManager.UrunFiyatiniGetir();
+            //DataManager.DegerdenYuksekFiyatliUrunleriGetir();
+            //DataManager.UrunGir();
+            //DataManager.UrunSil();
+            DataManager.UrunGuncelle();
 
             Console.ReadLine();
         }
