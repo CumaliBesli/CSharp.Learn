@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KafeYonetim.Lib;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -78,10 +79,10 @@ namespace KafeYonetim.Data
 
         }
 
-        public static void UrunListesiniYazdir()
+        public static List<Urun> UrunListesiniYazdir()
         {
             Console.Clear();
-
+            List<Urun> Urunler = new List<Urun>();
             using (var connection = CreateConnection())
             {
 
@@ -89,31 +90,35 @@ namespace KafeYonetim.Data
 
                 using (var result = command.ExecuteReader())
                 {
-                    Console.WriteLine($"{"ID".PadRight(4)} {"Isim".PadRight(19)} {"Fiyat".PadRight(19)} Stok Durumu");
-                    Console.WriteLine("".PadRight(60, '='));
+                    //Console.WriteLine($"{"ID".PadRight(4)} {"Isim".PadRight(19)} {"Fiyat".PadRight(19)} Stok Durumu");
+                    //Console.WriteLine("".PadRight(60, '='));
                     while (result.Read())
                     {
-                        Console.Write($"{result["ID"].ToString().PadRight(5)}");
-                        Console.Write($"{result["ad"].ToString().PadRight(20)}");
-                        Console.Write($"{result["Fiyat"].ToString().PadRight(20)}");
-                        Console.Write($"{result["StoktaVarMi"]}");
-                        Console.WriteLine();
+                        //Console.Write($"{result["ID"].ToString().PadRight(5)}");
+                        //Console.Write($"{result["ad"].ToString().PadRight(20)}");
+                        //Console.Write($"{result["Fiyat"].ToString().PadRight(20)}");
+                        //Console.Write($"{result["StoktaVarMi"]}");
+                        //Console.WriteLine();
+
+                        Urunler.Add(new Urun(result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
                     }
 
                 }
-            }
 
-            Console.ReadLine();
+            }
+            return Urunler;
+            //Console.ReadLine();
 
         }
 
-        public static void DegerdenYuksekFiyatliUrunleriGetir()
+        public static List<Urun> DegerdenYuksekFiyatliUrunleriGetir(string deger)
         {
+            List<Urun> Urunler = new List<Urun>();
             using (var connection = CreateConnection())
             {
 
-                Console.Write("Bir değer giriniz: ");
-                var deger = Console.ReadLine();
+                //Console.Write("Bir değer giriniz: ");
+                //var deger = Console.ReadLine();
 
                 var command = new SqlCommand("SELECT * FROM Urunler WHERE fiyat > @deger", connection);
                 command.Parameters.AddWithValue("@deger", double.Parse(deger));
@@ -123,15 +128,17 @@ namespace KafeYonetim.Data
 
                     while (result.Read())
                     {
-                        Console.Write($"{result["ad"]}");
-                        Console.Write($"{result["Fiyat"]}");
-                        Console.WriteLine();
+                        //Console.Write($"{result["ad"]}");
+                        //Console.Write($"{result["Fiyat"]}");
+                        //Console.WriteLine();
+                        Urunler.Add(new Urun(result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
                     }
 
                 }
             }
+            return Urunler;
 
-            Console.ReadLine();
+            //Console.ReadLine();
 
         }
 
@@ -176,7 +183,7 @@ namespace KafeYonetim.Data
             Console.ReadLine();
         }
 
-        public static void UrunGir(string ad, float fiyat, bool stok)
+        public static string UrunGir(string ad, float fiyat, bool stok)
         {
             using (var connection = CreateConnection())
             {
@@ -199,12 +206,17 @@ namespace KafeYonetim.Data
 
                 if (result > 0)
                 {
-                    Console.WriteLine("Kayıt eklendi.");
+                    //Console.WriteLine("Kayıt eklendi.");
+                    return "Kayıt eklendi.";
+                }
+                else
+                {
+                    return "Hata!";
                 }
 
             }
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         public static void SecilenUrunleriSil()
