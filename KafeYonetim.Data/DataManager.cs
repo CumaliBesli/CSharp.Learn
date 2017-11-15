@@ -81,7 +81,7 @@ namespace KafeYonetim.Data
 
         public static List<Urun> UrunListesiniYazdir()
         {
-            Console.Clear();
+
             List<Urun> Urunler = new List<Urun>();
             using (var connection = CreateConnection())
             {
@@ -100,7 +100,7 @@ namespace KafeYonetim.Data
                         //Console.Write($"{result["StoktaVarMi"]}");
                         //Console.WriteLine();
 
-                        Urunler.Add(new Urun(result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
+                        Urunler.Add(new Urun((int)result["Id"], result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
                     }
 
                 }
@@ -131,7 +131,37 @@ namespace KafeYonetim.Data
                         //Console.Write($"{result["ad"]}");
                         //Console.Write($"{result["Fiyat"]}");
                         //Console.WriteLine();
-                        Urunler.Add(new Urun(result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
+                        Urunler.Add(new Urun((int)result["ad"],result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
+                    }
+
+                }
+            }
+            return Urunler;
+
+            //Console.ReadLine();
+
+        }
+
+        public static List<Urun> StoktaOlmayanUrunleriGetir()
+        {
+            List<Urun> Urunler = new List<Urun>();
+            using (var connection = CreateConnection())
+            {
+
+                //Console.Write("Bir değer giriniz: ");
+                //var deger = Console.ReadLine();
+
+                var command = new SqlCommand("SELECT * FROM Urunler WHERE StoktaVarMi = 'false'", connection);
+
+                using (var result = command.ExecuteReader())
+                {
+
+                    while (result.Read())
+                    {
+                        //Console.Write($"{result["ad"]}");
+                        //Console.Write($"{result["Fiyat"]}");
+                        //Console.WriteLine();
+                        Urunler.Add(new Urun((int)result["Id"],result["ad"].ToString(), Convert.ToSingle(result["fiyat"]), (bool)result["StoktaVarMi"]));
                     }
 
                 }
@@ -219,9 +249,9 @@ namespace KafeYonetim.Data
             //Console.ReadLine();
         }
 
-        public static void SecilenUrunleriSil()
+        public static int SecilenUrunleriSil()
         {
-            UrunListesiniYazdir();
+            //UrunListesiniYazdir();
 
             Console.WriteLine("Silmek istediğiniz ürünlerin Id'lerini yazınız: ");
 
@@ -232,11 +262,11 @@ namespace KafeYonetim.Data
 
                 var command = new SqlCommand($"DELETE FROM Urunler WHERE ID IN ({idList}) ", connection);
 
-                command.ExecuteNonQuery();
-
+                int silinenUrunler = command.ExecuteNonQuery();
+                return silinenUrunler;
             }
 
-            UrunListesiniYazdir();
+            //UrunListesiniYazdir();
 
         }
     }

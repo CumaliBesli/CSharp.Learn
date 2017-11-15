@@ -40,17 +40,21 @@ namespace KafeYonetim.Sunum.AnaUygulama
 
             //Console.WriteLine(DataManager.UrunGir(adi, fiyat, stokDurumu));
 
-            TumUrunleriListele();
-            FiyattanBuyukUrunleriListele();
+            //TumUrunleriListele();
+            //FiyattanBuyukUrunleriListele();
+
+            //StoktaOlmayanUrunleriListele();
+
+            SeciliUrunleriSil();
         }
 
         static void UrunListele(List<Urun> UrunListesi)
         {
-            Console.WriteLine($"{"Isim".PadRight(33)} {"Fiyat".PadRight(25)} Stok Durumu");
+            Console.WriteLine($"{"ID".PadRight(33)} {"Isim".PadRight(33)} {"Fiyat".PadRight(25)} Stok Durumu");
             foreach (var urun in UrunListesi)
             {
                 Console.WriteLine("".PadRight(60, '='));
-                Console.WriteLine($"Adı: {urun.Ad.PadRight(25)}, Fiyatı: {urun.Fiyat.ToString().PadRight(15)}, Stok Durumu: {urun.StoktaVarmi}");
+                Console.WriteLine($"Id: {urun.Id.ToString().PadRight(25)} Adı: {urun.Ad.PadRight(25)}, Fiyatı: {urun.Fiyat.ToString().PadRight(15)}, Stok Durumu: {urun.StoktaVarmi}");
             }
             Console.ReadLine();
         }
@@ -66,5 +70,18 @@ namespace KafeYonetim.Sunum.AnaUygulama
             UrunListele(DataManager.DegerdenYuksekFiyatliUrunleriGetir(Console.ReadLine()));
         }
 
+        static void StoktaOlmayanUrunleriListele()
+        {
+            UrunListele(DataManager.StoktaOlmayanUrunleriGetir());
+        }
+
+        static void SeciliUrunleriSil()
+        {
+            TumUrunleriListele();
+            int silinenSayisi = DataManager.SecilenUrunleriSil();
+
+            Console.WriteLine($"{silinenSayisi} tane ürün silindi");
+            TumUrunleriListele();
+        }
     }
 }
