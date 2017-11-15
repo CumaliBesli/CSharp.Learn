@@ -231,5 +231,81 @@ namespace KafeYonetim.Data
                 return command.ExecuteNonQuery();
             }
         }
+
+        public static string MasaEkle(int MasaNo, int KafeId, string Durum)
+        {
+            using (SqlConnection connection = CreateConnection())
+            {
+                SqlCommand command = new SqlCommand("insert into Masa(MasaNo, KafeID, Durum) values(@masaNo,@kafeId,@Durum)", connection);
+                command.Parameters.AddWithValue("@masaNo", MasaNo);
+                command.Parameters.AddWithValue("@kafeId", KafeId);
+                command.Parameters.AddWithValue("@Durum", Durum);
+
+                var result = command.ExecuteNonQuery();
+
+                if (result > 0)
+                {
+                    return "Masa Eklendi.";
+                }
+                else
+                {
+                    return "Hata Oluştu";
+                }
+            }
+        }
+
+        public static int MasaSayisiGetir()
+        {
+            using (SqlConnection connection = CreateConnection())
+            {
+                SqlCommand command = new SqlCommand("Select COUNT(*) from Masa", connection);
+                return (int)command.ExecuteScalar();
+            }
+        }
+
+        public static Kafe KafeyiGetir()
+        {
+            using (SqlConnection connection = CreateConnection())
+            {
+                SqlCommand command = new SqlCommand("Select Ad,AcilisSaati,KapanisSaati from Kafe", connection);
+                using (SqlDataReader result = command.ExecuteReader())
+                {
+                    result.Read();
+                    return new Kafe(result["Ad"].ToString(), result["AcilisSaati"].ToString(), result["KapanisSaati"].ToString());
+
+                }
+            }
+
+        }
+
+        public static List<Calisan> CalisanListesiniGetir()
+        {
+            List<Calisan> Calisanlar = new List<Calisan>();
+
+            using (SqlConnection connection = CreateConnection())
+            {
+                SqlCommand command = new SqlCommand("Select * from Calisan", connection);
+
+                using (SqlDataReader result = command.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        if ((int)result["Id"] == 1)
+                        {
+                            Calisanlar.Add(new Asci(result["Adi"].ToString(), (DateTime)result["IseGirisTarihi"], KafeyiGetir(), "Asçı"));
+                        }
+                        else if ((int)result["Id"] == 2)
+                        {
+                            Calisanlar.Add(new Garson(result["Adi"].ToString(), (DateTime)result["IseGirisTarihi"], KafeyiGetir(), "Garson"));
+                        }
+                        else if ((int)result["Id"] == 3)
+                        {
+                            Calisanlar.Add(new Garson(result["Adi"].ToString(), (DateTime)result["IseGirisTarihi"], KafeyiGetir(), "Bulaşıkçı"));
+                        }
+                    }
+                }
+            }
+            return Calisanlar;
+        }
     }
 }

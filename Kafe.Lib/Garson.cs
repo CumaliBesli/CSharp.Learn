@@ -8,7 +8,7 @@ namespace KafeYonetim.Lib
 {
     public class Garson: Calisan
     {
-        public Garson(string i, DateTime g, Kafe k): base(i, g, k)
+        public Garson(string i, DateTime g, Kafe k, string gorev): base(i, g, k, gorev)
         {
 
         }

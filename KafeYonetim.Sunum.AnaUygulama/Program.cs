@@ -41,6 +41,9 @@ namespace KafeYonetim.Sunum.AnaUygulama
                 Console.WriteLine("3. Ürün Ekle");
                 Console.WriteLine("4. Stokta olmayan ürünleri listele");
                 Console.WriteLine("5. Ürün Sil");
+                Console.WriteLine("6. Masa Sayısını Göster");
+                Console.WriteLine("7. Masa Ekle");
+                Console.WriteLine("8. Çalışanları Getir");
                 Console.WriteLine();
                 Console.Write("Bir seçim yapınız (çıkmak için H harfine basınız): ");
                 var secim = Console.ReadLine();
@@ -52,6 +55,9 @@ namespace KafeYonetim.Sunum.AnaUygulama
                     case "3": UrunGir(); break;
                     case "4": StoktaOlmayanUrunleriListele(); break;
                     case "5": UrunSil(); break;
+                    case "6": MasaSayisiniYazdir(); break;
+                    case "7": MasaEkle(); break;
+                    case "8": CalisanListesiniYazdir(); break;
                     case "h": return;
                     default:
                         break;
@@ -59,6 +65,35 @@ namespace KafeYonetim.Sunum.AnaUygulama
 
             } while (true);
 
+        }
+
+        private static void CalisanListesiniYazdir()
+        {
+            foreach (var calisan in DataManager.CalisanListesiniGetir())
+            {
+                Console.WriteLine($"Adı: {calisan.Isim}, Görevi: {calisan.Gorevi} ");
+            }
+            Console.ReadLine();
+        }
+
+        private static void MasaEkle()
+        {
+            Console.Write("Masa Numarası Yazın:");
+            int masaNo = int.Parse(Console.ReadLine());
+            //Console.Write("Kafe Id Yazın:");
+            int kafeId = 1; //int.Parse(Console.ReadLine());
+            Console.Write("Masa Durumunu Belirtin:");
+            string masaDurumu = Console.ReadLine();
+
+            Console.WriteLine(DataManager.MasaEkle(masaNo, 1, masaDurumu));
+
+            Console.ReadLine();
+        }
+
+        private static void MasaSayisiniYazdir()
+        {
+            Console.WriteLine(DataManager.MasaSayisiGetir() + " tane masa var");
+            Console.ReadLine();
         }
 
         private static void UrunSil()
