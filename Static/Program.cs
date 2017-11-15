@@ -10,7 +10,7 @@ namespace Static
     {
         static void Main(string[] args)
         {
-
+            //Test
             Console.WriteLine("Örnek 1");
             var statikOlmayanClass = new StatikOlmayanClass();
             statikOlmayanClass.MerhabaDe();
