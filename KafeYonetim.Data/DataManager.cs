@@ -17,7 +17,7 @@ namespace KafeYonetim.Data
             return connection;
         }
 
-        public static void KafeBilgisiniYazdir()
+        public static Kafe AktifKafeyiGetir()
         {
             using (var connection = CreateConnection())
             {
@@ -26,12 +26,12 @@ namespace KafeYonetim.Data
                 using (var result = command.ExecuteReader())
                 {
                     result.Read();
-                    Console.WriteLine($"Kafe Adı: {result["Ad"]}");
-                    Console.WriteLine($"Kafe Durumu: {result["Durum"]}");
+                    var kafe = new Kafe((int)result["Id"], result["Ad"].ToString(), result["AcilisSaati"].ToString(), result["KapanisSaati"].ToString());
+                    kafe.Durum = (KafeDurum)result["Durum"];
+
+                    return kafe;
                 }
             }
-
-            Console.ReadLine();
         }
 
         public static void KafeAdiniGetir()
@@ -72,6 +72,25 @@ namespace KafeYonetim.Data
 
             Console.ReadLine();
 
+        }
+
+        public static Tuple<int, int> MasaSayisi()
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("SELECT COUNT(*) AS MasaSayisi, SUM(KisiSayisi) AS KisiSayisi FROM Masa", connection);
+
+                var reader =  command.ExecuteReader();
+
+                reader.Read();
+
+                var tuple = new Tuple<int, int>((int)reader["MasaSayisi"], (int)reader["KisiSayisi"]);
+
+                return tuple; 
+
+                //return new Tuple<int, int>((int)reader["MasaSayisi"], (int)reader["KisiSayisi"]);               
+                //return new MasaKisiSayisi { MasaSayisi = (int)reader["MasaSayisi"], KisiSayisi=(int)reader["KisiSayisi"]};
+            }
         }
 
         public static List<Urun> UrunListesiniGetir()
@@ -170,6 +189,27 @@ namespace KafeYonetim.Data
             Console.ReadLine();
         }
 
+        public static bool UrunGir(string ad, double fiyat, bool stokDurum)
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("INSERT INTO Urunler (ad, fiyat, stoktavarmi) VALUES (@ad, @fiyat, @stoktaVarMi)", connection);
+                command.Parameters.AddWithValue("@ad", ad);
+                command.Parameters.AddWithValue("@fiyat", fiyat);
+                command.Parameters.AddWithValue("@stoktaVarMi", stokDurum);
+
+                var result = command.ExecuteNonQuery();
+
+                if (result > 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+        }
+
         public static bool UrunGir(Urun urun)
         {
             using (var connection = CreateConnection())
@@ -229,6 +269,58 @@ namespace KafeYonetim.Data
                 var command = new SqlCommand($"DELETE FROM Urunler WHERE ID IN ({idList}) ", connection);
 
                 return command.ExecuteNonQuery();
+            }
+        }
+
+        //public static int MasaEkle(string masaNo, int kafeId)
+        //{
+        //    return MasaEkle(masaNo, kafeId, DateTime.Now);
+        //}
+
+        //public static int MasaEkle(string masaNo, int kafeId, DateTime eklenmeTarihi)
+        //{
+        //    return 0;
+        //}
+
+        public static int MasaEkle(Masa masa)
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("INSERT INTO Masa (MasaNo, KafeId, Durum, KisiSayisi) VALUES (@masaNo, @kafeId, @durum, @kisiSayisi);SELECT scope_identity()", connection);
+
+                command.Parameters.AddWithValue("@masaNo", masa.MasaNo);
+                command.Parameters.AddWithValue("@kafeId", masa.Kafe.Id);
+                command.Parameters.AddWithValue("@durum", masa.Durum);
+                command.Parameters.AddWithValue("@kisiSayisi", masa.KisiSayisi);
+
+                int result = Convert.ToInt32(command.ExecuteScalar());
+
+                return result;
+            }
+        }
+
+        public static int GarsonEkle(Garson garson)
+        {
+            using (var connection = CreateConnection())
+            {
+                var commandGarson = new SqlCommand("INSERT INTO Garson (Bahsis) VALUES(@bahsis); SELECT scope_identity()", connection);
+                commandGarson.Parameters.AddWithValue("@bahsis", garson.Bahsis);
+
+                var id = Convert.ToInt32(commandGarson.ExecuteScalar());
+
+                var commandCalisan = new SqlCommand("INSERT INTO Calisan (Isim, IseGirisTarihi, MesaideMi, KafeId, Durum, GorevId, GorevTabloId) VALUES (@Isim, @IseGirisTarihi, @MesaideMi, @KafeId, @Durum, @GorevId, @GorevTabloId); SELECT scope_identity()", connection);
+
+                commandCalisan.Parameters.AddWithValue("@Isim", garson.Isim);
+                commandCalisan.Parameters.AddWithValue("@IseGirisTarihi", garson.IseGirisTarihi);
+                commandCalisan.Parameters.AddWithValue("@MesaideMi", garson.MesaideMi);
+                commandCalisan.Parameters.AddWithValue("@KafeId", garson.Kafe.Id);
+                commandCalisan.Parameters.AddWithValue("@Durum", garson.Durum);
+                commandCalisan.Parameters.AddWithValue("@GorevId", 2);
+                commandCalisan.Parameters.AddWithValue("@GorevTabloId", id);
+
+                var result = Convert.ToInt32(commandCalisan.ExecuteScalar());
+
+                return result;
             }
         }
     }
