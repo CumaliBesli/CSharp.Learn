@@ -15,6 +15,7 @@ namespace KafeYonetim.Lib
             MesaideMi = false;
             Kafe = kafe;
             Siparisler = new List<Siparis>();
+            Gorev = new Gorev();
         }
 
         public int Id { get; set; }
@@ -24,7 +25,7 @@ namespace KafeYonetim.Lib
         public CalisanDurum Durum { get; set; }
         public List<Siparis> Siparisler { get; set; }
         public Kafe Kafe { get; set; }
-        public double Bahsis { get; set; }
+        public Gorev Gorev { get; set; }
 
         public void MesaiyeBasladi()
         {
@@ -35,5 +36,6 @@ namespace KafeYonetim.Lib
         {
             MesaideMi = false;
         }
+        
     }
 }

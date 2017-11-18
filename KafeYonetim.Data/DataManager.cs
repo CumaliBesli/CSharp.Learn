@@ -93,6 +93,49 @@ namespace KafeYonetim.Data
             }
         }
 
+        public static List<Calisan> CalisanListesiniGetir()
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("CalisanListesiniGetir", connection);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    var list = new List<Calisan>();
+
+                    while (reader.Read())
+                    {
+                        var calisan = new Calisan(reader["Isim"].ToString(), (DateTime)reader["IseGirisTarihi"], DataManager.AktifKafeyiGetir());
+
+                        calisan.Gorev.GorevAdi = reader["GorevAdi"].ToString();
+
+                        list.Add(calisan);
+                    }
+
+                    return list;
+                }
+            }
+        }
+
+        public static int AsciEkle(Asci asci)
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("asciEkle", connection);
+
+                command.Parameters.AddWithValue("@puan", asci.Puan);
+                command.Parameters.AddWithValue("@kafeId", asci.Kafe.Id);
+                command.Parameters.AddWithValue("@isim", asci.Isim);
+
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                var result = Convert.ToInt32(command.ExecuteScalar());
+
+                return result;
+            }
+        }
+
         public static List<Urun> UrunListesiniGetir()
         {
             using (var connection = CreateConnection())
@@ -303,22 +346,20 @@ namespace KafeYonetim.Data
         {
             using (var connection = CreateConnection())
             {
-                var commandGarson = new SqlCommand("INSERT INTO Garson (Bahsis) VALUES(@bahsis); SELECT scope_identity()", connection);
+                var commandGarson = new SqlCommand($@" 
+                            INSERT INTO Garson (Bahsis) VALUES (@bahsis); 
+                            DECLARE @id int;
+                            SET @id= scope_identity();
+                            INSERT INTO Calisan (Isim, IseGirisTarihi, MesaideMi, KafeId, Durum, GorevId, GorevTabloId) VALUES (@Isim, @IseGirisTarihi, @MesaideMi, @KafeId, @Durum, @GorevId, @id); SELECT scope_identity()", connection);
                 commandGarson.Parameters.AddWithValue("@bahsis", garson.Bahsis);
+                commandGarson.Parameters.AddWithValue("@Isim", garson.Isim);
+                commandGarson.Parameters.AddWithValue("@IseGirisTarihi", garson.IseGirisTarihi);
+                commandGarson.Parameters.AddWithValue("@MesaideMi", garson.MesaideMi);
+                commandGarson.Parameters.AddWithValue("@KafeId", garson.Kafe.Id);
+                commandGarson.Parameters.AddWithValue("@Durum", garson.Durum);
+                commandGarson.Parameters.AddWithValue("@GorevId", 2);
 
-                var id = Convert.ToInt32(commandGarson.ExecuteScalar());
-
-                var commandCalisan = new SqlCommand("INSERT INTO Calisan (Isim, IseGirisTarihi, MesaideMi, KafeId, Durum, GorevId, GorevTabloId) VALUES (@Isim, @IseGirisTarihi, @MesaideMi, @KafeId, @Durum, @GorevId, @GorevTabloId); SELECT scope_identity()", connection);
-
-                commandCalisan.Parameters.AddWithValue("@Isim", garson.Isim);
-                commandCalisan.Parameters.AddWithValue("@IseGirisTarihi", garson.IseGirisTarihi);
-                commandCalisan.Parameters.AddWithValue("@MesaideMi", garson.MesaideMi);
-                commandCalisan.Parameters.AddWithValue("@KafeId", garson.Kafe.Id);
-                commandCalisan.Parameters.AddWithValue("@Durum", garson.Durum);
-                commandCalisan.Parameters.AddWithValue("@GorevId", 2);
-                commandCalisan.Parameters.AddWithValue("@GorevTabloId", id);
-
-                var result = Convert.ToInt32(commandCalisan.ExecuteScalar());
+                var result = Convert.ToInt32(commandGarson.ExecuteScalar());
 
                 return result;
             }

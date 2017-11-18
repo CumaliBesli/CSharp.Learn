@@ -29,6 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Static", "Static\Static.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tupple", "Tupple\Tupple.csproj", "{3DF42247-03B4-4E7A-9898-BB4D252AC1C3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBase", "DataBase", "{8FCDB2D3-FF18-47A8-BE55-7AB43BDB332B}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\..\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Backup\KafeYonetim.bak = ..\..\..\..\..\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Backup\KafeYonetim.bak
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
