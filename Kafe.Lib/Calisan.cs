@@ -8,7 +8,7 @@ namespace KafeYonetim.Lib
 {
     public class Calisan
     {
-        public Calisan(string isim, DateTime girisTarihi, Kafe kafe, string gorev)
+        public Calisan(string isim, DateTime girisTarihi, Kafe kafe)
         {
             Isim = isim;
             IseGirisTarihi = girisTarihi;
