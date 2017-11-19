@@ -17,7 +17,7 @@ namespace KafeYonetim.Data
             return connection;
         }
 
-        public static void KafeBilgisiniYazdir()
+        public static Kafe AktifKafeyiGetir()
         {
             using (var connection = CreateConnection())
             {
@@ -26,12 +26,12 @@ namespace KafeYonetim.Data
                 using (var result = command.ExecuteReader())
                 {
                     result.Read();
-                    Console.WriteLine($"Kafe Adı: {result["Ad"]}");
-                    Console.WriteLine($"Kafe Durumu: {result["Durum"]}");
+                    var kafe = new Kafe((int)result["Id"], result["Ad"].ToString(), result["AcilisSaati"].ToString(), result["KapanisSaati"].ToString());
+                    kafe.Durum = (KafeDurum)result["Durum"];
+
+                    return kafe;
                 }
             }
-
-            Console.ReadLine();
         }
 
         public static void KafeAdiniGetir()
@@ -72,6 +72,68 @@ namespace KafeYonetim.Data
 
             Console.ReadLine();
 
+        }
+
+        public static Tuple<int, int> MasaSayisi()
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("SELECT COUNT(*) AS MasaSayisi, SUM(KisiSayisi) AS KisiSayisi FROM Masa", connection);
+
+                var reader = command.ExecuteReader();
+
+                reader.Read();
+
+                var tuple = new Tuple<int, int>((int)reader["MasaSayisi"], (int)reader["KisiSayisi"]);
+
+                return tuple;
+
+                //return new Tuple<int, int>((int)reader["MasaSayisi"], (int)reader["KisiSayisi"]);               
+                //return new MasaKisiSayisi { MasaSayisi = (int)reader["MasaSayisi"], KisiSayisi=(int)reader["KisiSayisi"]};
+            }
+        }
+
+        public static List<Calisan> CalisanListesiniGetir()
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("CalisanListesiniGetir", connection);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    var list = new List<Calisan>();
+
+                    while (reader.Read())
+                    {
+                        var calisan = new Calisan(reader["Isim"].ToString(), (DateTime)reader["IseGirisTarihi"], DataManager.AktifKafeyiGetir());
+
+                        calisan.Gorev.GorevAdi = reader["GorevAdi"].ToString();
+
+                        list.Add(calisan);
+                    }
+
+                    return list;
+                }
+            }
+        }
+
+        public static int AsciEkle(Asci asci)
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("asciEkle", connection);
+
+                command.Parameters.AddWithValue("@puan", asci.Puan);
+                command.Parameters.AddWithValue("@kafeId", asci.Kafe.Id);
+                command.Parameters.AddWithValue("@isim", asci.Isim);
+
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                var result = Convert.ToInt32(command.ExecuteScalar());
+
+                return result;
+            }
         }
 
         public static List<Urun> UrunListesiniGetir()
@@ -170,6 +232,27 @@ namespace KafeYonetim.Data
             Console.ReadLine();
         }
 
+        public static bool UrunGir(string ad, double fiyat, bool stokDurum)
+        {
+            using (var connection = CreateConnection())
+            {
+                var command = new SqlCommand("INSERT INTO Urunler (ad, fiyat, stoktavarmi) VALUES (@ad, @fiyat, @stoktaVarMi)", connection);
+                command.Parameters.AddWithValue("@ad", ad);
+                command.Parameters.AddWithValue("@fiyat", fiyat);
+                command.Parameters.AddWithValue("@stoktaVarMi", stokDurum);
+
+                var result = command.ExecuteNonQuery();
+
+                if (result > 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+        }
+
         public static bool UrunGir(Urun urun)
         {
             using (var connection = CreateConnection())
@@ -232,80 +315,75 @@ namespace KafeYonetim.Data
             }
         }
 
-        public static string MasaEkle(int MasaNo, int KafeId, string Durum)
+        //public static int MasaEkle(string masaNo, int kafeId)
+        //{
+        //    return MasaEkle(masaNo, kafeId, DateTime.Now);
+        //}
+
+        //public static int MasaEkle(string masaNo, int kafeId, DateTime eklenmeTarihi)
+        //{
+        //    return 0;
+        //}
+
+        public static int MasaEkle(Masa masa)
         {
-            using (SqlConnection connection = CreateConnection())
+            using (var connection = CreateConnection())
             {
-                SqlCommand command = new SqlCommand("insert into Masa(MasaNo, KafeID, Durum) values(@masaNo,@kafeId,@Durum)", connection);
-                command.Parameters.AddWithValue("@masaNo", MasaNo);
-                command.Parameters.AddWithValue("@kafeId", KafeId);
-                command.Parameters.AddWithValue("@Durum", Durum);
+                var command = new SqlCommand("INSERT INTO Masa (MasaNo, KafeId, Durum, KisiSayisi) VALUES (@masaNo, @kafeId, @durum, @kisiSayisi);SELECT scope_identity()", connection);
 
-                var result = command.ExecuteNonQuery();
+                command.Parameters.AddWithValue("@masaNo", masa.MasaNo);
+                command.Parameters.AddWithValue("@kafeId", masa.Kafe.Id);
+                command.Parameters.AddWithValue("@durum", masa.Durum);
+                command.Parameters.AddWithValue("@kisiSayisi", masa.KisiSayisi);
 
-                if (result > 0)
-                {
-                    return "Masa Eklendi.";
-                }
-                else
-                {
-                    return "Hata Oluştu";
-                }
+                int result = Convert.ToInt32(command.ExecuteScalar());
+
+                return result;
             }
         }
 
-        public static int MasaSayisiGetir()
+        public static int GarsonEkle(Garson garson)
         {
-            using (SqlConnection connection = CreateConnection())
+            using (var connection = CreateConnection())
             {
-                SqlCommand command = new SqlCommand("Select COUNT(*) from Masa", connection);
-                return (int)command.ExecuteScalar();
+                var commandGarson = new SqlCommand($@" 
+                            INSERT INTO Garson (Bahsis) VALUES (@bahsis); 
+                            DECLARE @id int;
+                            SET @id= scope_identity();
+                            INSERT INTO Calisan (Isim, IseGirisTarihi, MesaideMi, KafeId, Durum, GorevId, GorevTabloId) VALUES (@Isim, @IseGirisTarihi, @MesaideMi, @KafeId, @Durum, @GorevId, @id); SELECT scope_identity()", connection);
+                commandGarson.Parameters.AddWithValue("@bahsis", garson.Bahsis);
+                commandGarson.Parameters.AddWithValue("@Isim", garson.Isim);
+                commandGarson.Parameters.AddWithValue("@IseGirisTarihi", garson.IseGirisTarihi);
+                commandGarson.Parameters.AddWithValue("@MesaideMi", garson.MesaideMi);
+                commandGarson.Parameters.AddWithValue("@KafeId", garson.Kafe.Id);
+                commandGarson.Parameters.AddWithValue("@Durum", garson.Durum);
+                commandGarson.Parameters.AddWithValue("@GorevId", 2);
+
+                var result = Convert.ToInt32(commandGarson.ExecuteScalar());
+
+                return result;
             }
         }
 
-        public static Kafe KafeyiGetir()
+        public static int BulasikciEkle(Bulasikci bulasikci)
         {
-            using (SqlConnection connection = CreateConnection())
+            using (var connection = CreateConnection())
             {
-                SqlCommand command = new SqlCommand("Select Ad,AcilisSaati,KapanisSaati from Kafe", connection);
-                using (SqlDataReader result = command.ExecuteReader())
-                {
-                    result.Read();
-                    return new Kafe(result["Ad"].ToString(), result["AcilisSaati"].ToString(), result["KapanisSaati"].ToString());
+                var commandBulasik = new SqlCommand(@"insert into Bulasikci (Prim) values(@prim) declare @bulasikID int set @bulasikID = SCOPE_IDENTITY()
+                                                    insert into Calisan (Isim,IseGirisTarihi,MesaideMi,KafeID,Durum,GorevID,GorevTabloID) values (@Isim, @IseGirisTarihi, @MesaideMi, @KafeId, @Durum,3,@bulasikID); 
+                                                    select SCOPE_IDENTITY()", connection);
+                commandBulasik.Parameters.AddWithValue("@prim", bulasikci.Prim);
+                commandBulasik.Parameters.AddWithValue("@Isim", bulasikci.Isim);
+                commandBulasik.Parameters.AddWithValue("@IseGirisTarihi", bulasikci.IseGirisTarihi);
+                commandBulasik.Parameters.AddWithValue("@MesaideMi", bulasikci.MesaideMi);
+                commandBulasik.Parameters.AddWithValue("@KafeId", bulasikci.Kafe.Id);
+                commandBulasik.Parameters.AddWithValue("@Durum", bulasikci.Durum.ToString());
+                commandBulasik.Parameters.AddWithValue("@GorevId", 3);
 
-                }
+                var result = Convert.ToInt32(commandBulasik.ExecuteScalar());
+
+                return result;
             }
-
-        }
-
-        public static List<Calisan> CalisanListesiniGetir()
-        {
-            List<Calisan> Calisanlar = new List<Calisan>();
-
-            using (SqlConnection connection = CreateConnection())
-            {
-                SqlCommand command = new SqlCommand("Select * from Calisan", connection);
-
-                using (SqlDataReader result = command.ExecuteReader())
-                {
-                    while (result.Read())
-                    {
-                        if ((int)result["Id"] == 1)
-                        {
-                            Calisanlar.Add(new Asci(result["Adi"].ToString(), (DateTime)result["IseGirisTarihi"], KafeyiGetir(), "Asçı"));
-                        }
-                        else if ((int)result["Id"] == 2)
-                        {
-                            Calisanlar.Add(new Garson(result["Adi"].ToString(), (DateTime)result["IseGirisTarihi"], KafeyiGetir(), "Garson"));
-                        }
-                        else if ((int)result["Id"] == 3)
-                        {
-                            Calisanlar.Add(new Garson(result["Adi"].ToString(), (DateTime)result["IseGirisTarihi"], KafeyiGetir(), "Bulaşıkçı"));
-                        }
-                    }
-                }
-            }
-            return Calisanlar;
         }
     }
 }

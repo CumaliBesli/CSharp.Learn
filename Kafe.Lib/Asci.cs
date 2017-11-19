@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KafeYonetim.Lib
 {
-    public class Asci: Calisan
+    public class Asci : Calisan
     {
-        public Asci(string i, DateTime g, Kafe k, string gorev): base(i, g, k, gorev)
+        public Asci(string i, DateTime g, Kafe k) : base(i, g, k)
         {
 
         }
@@ -35,5 +35,7 @@ namespace KafeYonetim.Lib
             siparis.SiparisiAlanGarson.SiparisiServisEt(siparis);
             siparis.SiparisiHazirlayanAsci = null;
         }
+
+        public int Puan { get; set; }
     }
 }
