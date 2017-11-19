@@ -80,13 +80,13 @@ namespace KafeYonetim.Data
             {
                 var command = new SqlCommand("SELECT COUNT(*) AS MasaSayisi, SUM(KisiSayisi) AS KisiSayisi FROM Masa", connection);
 
-                var reader =  command.ExecuteReader();
+                var reader = command.ExecuteReader();
 
                 reader.Read();
 
                 var tuple = new Tuple<int, int>((int)reader["MasaSayisi"], (int)reader["KisiSayisi"]);
 
-                return tuple; 
+                return tuple;
 
                 //return new Tuple<int, int>((int)reader["MasaSayisi"], (int)reader["KisiSayisi"]);               
                 //return new MasaKisiSayisi { MasaSayisi = (int)reader["MasaSayisi"], KisiSayisi=(int)reader["KisiSayisi"]};
@@ -360,6 +360,27 @@ namespace KafeYonetim.Data
                 commandGarson.Parameters.AddWithValue("@GorevId", 2);
 
                 var result = Convert.ToInt32(commandGarson.ExecuteScalar());
+
+                return result;
+            }
+        }
+
+        public static int BulasikciEkle(Bulasikci bulasikci)
+        {
+            using (var connection = CreateConnection())
+            {
+                var commandBulasik = new SqlCommand(@"insert into Bulasikci (Prim) values(@prim) declare @bulasikID int set @bulasikID = SCOPE_IDENTITY()
+                                                    insert into Calisan (Isim,IseGirisTarihi,MesaideMi,KafeID,Durum,GorevID,GorevTabloID) values (@Isim, @IseGirisTarihi, @MesaideMi, @KafeId, @Durum,3,@bulasikID); 
+                                                    select SCOPE_IDENTITY()", connection);
+                commandBulasik.Parameters.AddWithValue("@prim", bulasikci.Prim);
+                commandBulasik.Parameters.AddWithValue("@Isim", bulasikci.Isim);
+                commandBulasik.Parameters.AddWithValue("@IseGirisTarihi", bulasikci.IseGirisTarihi);
+                commandBulasik.Parameters.AddWithValue("@MesaideMi", bulasikci.MesaideMi);
+                commandBulasik.Parameters.AddWithValue("@KafeId", bulasikci.Kafe.Id);
+                commandBulasik.Parameters.AddWithValue("@Durum", bulasikci.Durum.ToString());
+                commandBulasik.Parameters.AddWithValue("@GorevId", 3);
+
+                var result = Convert.ToInt32(commandBulasik.ExecuteScalar());
 
                 return result;
             }
